@@ -40,6 +40,8 @@
 #include "cybsp.h"
 #include "cy_utils.h"
 
+#include "fsm.h"
+
 int main(void)
 {
     cy_rslt_t result;
@@ -51,8 +53,12 @@ int main(void)
         CY_ASSERT(0);
     }
 
+    fsm_ctxt_t ctxt = {0};
     for (;;)
     {
+        read_rpi(&ctxt);
+        fsm_step(&ctxt);
+        write_rpi(&ctxt);
     }
 }
 

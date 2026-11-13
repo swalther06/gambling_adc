@@ -1,28 +1,17 @@
 
 
 import time
-
 import cv2
 from enum import Enum, auto
 from picamera2 import Picamera2
-from gpiozero import DigitalInputDevice, DigitalOutputDevice
 import mediapipe as mp
+
+import comms
 
 WIDTH, HEIGHT = 640, 480
 SCREEN_CENTER = WIDTH/2
 CENTER_MARGIN = 0.05
 CONFIRM_MARGIN = 0.20
-
-# input pins
-PIN_DIRECTION = 3
-PIN_START = 4
-
-# output pins
-PIN_LEFT = 17
-PIN_RIGHT = 27
-PIN_CENTERED = 22
-PIN_PLAYER = 23
-PIN_SKIP = 24
 
 FRAMES_HELD_THRESH = 15
 CONFIRM_TIMEOUT = 3 # seconds
@@ -79,22 +68,6 @@ cam.configure(config)
 cam.start()
 time.sleep(1) # let the auto-exposure settle
 
-
-# IO ports
-# inp_direction = DigitalInputDevice(PIN_DIRECTION) # 0 is clockwise, 1 is counterclockwise
-# inp_reset = DigitalInputDevice(PIN_RESET)
-
-# DEBUGGING
-inp_direction = False
-inp_reset = False
-
-out_right = DigitalOutputDevice(PIN_RIGHT)
-out_left = DigitalOutputDevice(PIN_LEFT)
-out_center = DigitalOutputDevice(PIN_CENTERED)
-out_player = DigitalOutputDevice(PIN_PLAYER)
-out_skip = DigitalOutputDevice(PIN_SKIP)
-
-
 # mediapipe ML
 BaseOptions = mp.tasks.BaseOptions
 
@@ -139,17 +112,20 @@ person_type = ""
 # declare start time (for frame of video)
 start = time.monotonic()
 
+# uart comms
+link = comms.xmc_link()
+
 with FaceDetector.create_from_options(fd_options) as fd, GestureRecognizer.create_from_options(gr_options) as gr:
     while True:
+        # read inputs
+        direction, reset = link.uart_read_inputs()
+
         #set outputs low at start of loop
         right = 0
         left = 0
         center = 0
         player = 0
         skip = 0
-        
-        direction = inp_direction
-        reset = inp_reset
         
         # read camera image
         frame = cam.capture_array()
@@ -174,7 +150,7 @@ with FaceDetector.create_from_options(fd_options) as fd, GestureRecognizer.creat
                 closest_person_x = 0
                 person_type = ""
                 
-                if not reset:
+                if reset == 0:
                     state = State.SEARCH
                 
             # if face detection sees a face, go into centering phase
@@ -257,19 +233,15 @@ with FaceDetector.create_from_options(fd_options) as fd, GestureRecognizer.creat
                 elif person_type == "BYSTANDER":
                     skip = 1
                     
-                if reset:
+                if reset == 1:
                     state = State.IDLE
                 
         
-        # assign output values
-        out_right.value = right
-        out_left.value = left
-        out_center.value = center
-        out_player.value = player
-        out_skip.value = skip
+        # send output
+        link.uart_send_status(player, skip, left, right, center)
         
         
-        # print output signals 
+        # print screen
         cv2.putText(frame, f"state: {state}   status:{person_type}    reset:{reset}    dir:{direction}", (10, 25),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
         cv2.imshow("center your face", frame)
