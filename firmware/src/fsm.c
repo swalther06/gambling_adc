@@ -1,13 +1,15 @@
 #include "fsm.h"
 #include "rpi_comms.h"
+#include "SEGGER_RTT.h"
 
 state_t state_idle_run(fsm_ctxt_t *ctxt) {
     if (ctxt->start_scan) {
+        ctxt->start_scan = 0;
         ctxt->to_rpi.reset = false;
         return STATE_FOLLOW;
     }
 
-    return STATE_FOLLOW;
+    return STATE_IDLE;
 
 
 }
@@ -15,14 +17,11 @@ state_t state_idle_run(fsm_ctxt_t *ctxt) {
 
 state_t state_follow_run(fsm_ctxt_t *ctxt) {
     if (ctxt->from_rpi.left) {
-        // drive right motor signal low
-        // drive left motor signal high
+        // turn left
     } else if (ctxt->from_rpi.right) {
-        // drive right motor signal high
-        // drive left motor signal low
+        // turn right
     } else if (ctxt->from_rpi.center) {
-        // drive right motor signal low
-        // drive left motor signal low
+        // stay centered
     }
 
     if (ctxt->from_rpi.player) {
@@ -44,17 +43,23 @@ state_t state_follow_run(fsm_ctxt_t *ctxt) {
 
 
 state_t state_advance_run(fsm_ctxt_t *ctxt) {
-    if (ctxt->to_rpi.dir) { // clockwise
-        if (ctxt->pan_angle > ctxt->player_angles[ctxt->num_players-1] + 10/*MARGIN*/)
+    if (!ctxt->to_rpi.dir) { // clockwise
+        if (ctxt->pan_angle > ctxt->player_angles[ctxt->num_players-1] + 10/*MARGIN*/) {
+            ctxt->to_rpi.reset = false;
             return STATE_FOLLOW;
+        }
         
         // drive turret clockwise
     } else { // counterclockwise
-        if (ctxt->pan_angle < ctxt->player_angles[ctxt->num_players-1] - 10 /*MARGIN*/)
+        if (ctxt->pan_angle < ctxt->player_angles[ctxt->num_players-1] - 10 /*MARGIN*/) {
+            ctxt->to_rpi.reset = false;
             return STATE_FOLLOW;
+        }
 
         // drive turret counterclockwise
     }
+
+    return STATE_ADVANCE;
 }
 
 

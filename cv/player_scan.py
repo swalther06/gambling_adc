@@ -24,7 +24,7 @@ class State(Enum):
     CONFIRM = auto() # wait for thumbs up to authenticate
     WAIT = auto() # report person as player or skip
     
-state = State.SEARCH
+state = State.IDLE
 
 
 # returns valid face closest to screen center 
@@ -249,13 +249,6 @@ with FaceDetector.create_from_options(fd_options) as fd, GestureRecognizer.creat
         key = cv2.waitKey(1) & 0xFF
         if key == ord("q"):
             break
-        
-        #DEBUGGING
-        if key == ord("r"):
-            inp_reset = not inp_reset
-            
-        if key == ord("d"):
-            inp_direction = not inp_direction
             
 
 cam.stop()

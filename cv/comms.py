@@ -37,25 +37,26 @@ class xmc_link():
             timeout=0)   # timeout=0: never blocks
 
         self.SYNC = 0b101 << 5
+        self.direction = 0
+        self.reset = 1
 
 
     def uart_read_inputs(self):
         # read input
         data = self.ser.read(self.ser.in_waiting)
 
-        direction, reset = 0
         for byte in data:
             if byte & 0xE0 == self.SYNC:
-                direction = byte & 1
-                reset = (byte >> 1) & 1
+                self.reset= byte & 1
+                self.direction = (byte >> 1) & 1
 
-        return direction, reset
+        return self.direction, self.reset
         
 
-    def uart_send_status(self, player : bool, skip : bool, left : bool, right : bool, center : bool):
+    def uart_send_status(self, player : int, skip : int, left : int, right : int, center : int):
         # send
         byte = self.SYNC | player << 4 | skip << 3 | left << 2 | right << 1 | center
-        self.ser.write(bytes[byte])
+        self.ser.write(bytes([byte]))
 
 
 

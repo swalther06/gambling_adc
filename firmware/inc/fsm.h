@@ -1,7 +1,6 @@
 #ifndef FSM_H
 #define FSM_H
 
-#include "stdbool.h"
 #include "rpi_comms.h"
 
 // states
@@ -37,6 +36,8 @@ state_t state_idle_run(fsm_ctxt_t *ctxt);
 state_t state_follow_run(fsm_ctxt_t *ctxt);
 state_t state_advance_run(fsm_ctxt_t *ctxt);
 state_t state_done_run(fsm_ctxt_t *ctxt);
+
+void fsm_step(fsm_ctxt_t *ctxt);
 
 
 #endif
