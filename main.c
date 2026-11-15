@@ -39,6 +39,10 @@
 
 #include "cybsp.h"
 #include "cy_utils.h"
+#include "xmc_uart.h"
+
+#include "fsm.h"
+#include "SEGGER_RTT.h"
 
 int main(void)
 {
@@ -51,8 +55,19 @@ int main(void)
         CY_ASSERT(0);
     }
 
+    SEGGER_RTT_Init();
+    SEGGER_RTT_WriteString(0,"starting program\n");
+
+    fsm_ctxt_t ctxt = {0};
+    ctxt.start_scan = 1;
+    volatile int valid_read;
+    volatile uint8_t data;
     for (;;)
     {
+        valid_read = read_rpi(&ctxt.from_rpi);
+        fsm_step(&ctxt);
+        write_rpi(&ctxt.to_rpi);
+
     }
 }
 
