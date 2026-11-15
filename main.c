@@ -55,13 +55,9 @@ int main(void)
         CY_ASSERT(0);
     }
 
-    SEGGER_RTT_Init();
-    SEGGER_RTT_WriteString(0,"starting program\n");
-
     fsm_ctxt_t ctxt = {0};
     ctxt.start_scan = 1;
     volatile int valid_read;
-    volatile uint8_t data;
     for (;;)
     {
         valid_read = read_rpi(&ctxt.from_rpi);

@@ -41,6 +41,9 @@
 #include "cy_utils.h"
 #include "xmc_gpio.h"
 #include "nhd_lib.h"
+#include "xmc_ccu4.h"
+#include "xmc_dac.h"
+
 bool HOLDEM = true;
 uint8_t NUM_PLAYERS = 4;
 
