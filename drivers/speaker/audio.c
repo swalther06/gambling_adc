@@ -1,4 +1,5 @@
 #include "audio.h"
+#include "speaker.h"
 
 // fah: 14480 samples (1.810 s)
 const uint32_t fah[] = {
@@ -909,6 +910,8 @@ const uint32_t fah[] = {
     2048, 2054, 2055, 2050, 2043, 2043, 2048, 2053, 2051, 2048, 2045, 2047, 2048, 2048, 2048, 2048,
 };
 const uint32_t fah_len = sizeof(fah) / sizeof(fah[0]);
+_Static_assert(sizeof(fah) / sizeof(fah[0]) <= SPEAKER_MAX_SAMPLES,
+               "fah too long for DMA list");
 
 // spongebob_fail: 26800 samples (3.350 s)
 const uint32_t spongebob_fail[] = {
@@ -2589,3 +2592,5 @@ const uint32_t spongebob_fail[] = {
     2048, 2048, 2048, 2048, 2048, 2048, 2048, 2048, 2048, 2048, 2048, 2048, 2048, 2048, 2048, 2048,
 };
 const uint32_t spongebob_fail_len = sizeof(spongebob_fail) / sizeof(spongebob_fail[0]);
+_Static_assert(sizeof(spongebob_fail) / sizeof(spongebob_fail[0]) <= SPEAKER_MAX_SAMPLES,
+               "spongebob_fail too long for DMA list");
