@@ -27,6 +27,11 @@ typedef struct {
     speaker_config_t config;
 } speaker_t;
 
+// Recommended config:
+// speaker_t speaker;
+//  speaker_config_t speaker_config = {&SPEAKER_DMA_config, SPEAKER_DMA_HW, SPEAKER_DMA_NUM,
+//                                      SPEAKER_DAC_HW, SPEAKER_DAC_NUM};
+
 // requires: the DAC module is already enabled and its channel configured
 // modifies: disables the speaker's DMA channel (only if init is valid)
 // returns: true if ... initiation was valid

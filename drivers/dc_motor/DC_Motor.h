@@ -23,6 +23,15 @@ typedef struct {
     dc_motor_config_t config;
 } dc_motor_t;
 
+// Recommended init call:
+// dc_motor_config_t motor_config = {  ccu4_0_HW,
+//                                         DC_MOTOR_SLICE_HW,
+//                                         XMC_CCU4_SHADOW_TRANSFER_SLICE_0 << (4U * DC_MOTOR_SLICE_NUM),
+//                                         FLYWHEEL_RAMP_TIME_S,
+//                                         DBH12V_MAX_DUTY,
+//                                         DBH12V_PWM_FREQ_HZ};
+// dc_motor_t shooting_motor;
+
 // requires: timer slice must not be started ("start on initialization" unchecked)
     // passive level on timer slice must be set to LOW
 // input: motor details
