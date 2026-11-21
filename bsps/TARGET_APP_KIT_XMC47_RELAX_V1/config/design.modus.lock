@@ -1,0 +1,5 @@
+HOSTNAME=JIMMY
+PID=20240
+PIPE=\\.\PIPE\802726f1-cb20-40a3-bd22-e43b53f56c32
+LIBRARIES=C:/Users/shid2/.modustoolbox/global/device-db/release-v4.41.0/props.json;C:/EECS373/mtb_shared/mtb-xmclib-cat3/release-v4.7.0/props.json;
+USERNAME=shid2

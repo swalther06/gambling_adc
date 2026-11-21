@@ -16,7 +16,7 @@ typedef enum {
 } sound_name_t;
 
 typedef struct {
-    XMC_DMA_CH_CONFIG_t *dma_config;
+    const XMC_DMA_CH_CONFIG_t *dma_config;
     XMC_DMA_t *dma_number;
     uint8_t dma_channel;
     XMC_DAC_t *dac_number;

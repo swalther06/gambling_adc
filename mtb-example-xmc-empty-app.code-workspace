@@ -25,7 +25,8 @@
         "cortex-debug.JLinkGDBServerPath.osx": "JLinkGDBServerCLExe",
         "cortex-debug.JLinkGDBServerPath.linux": "JLinkGDBServerCLExe",
         "C_Cpp.intelliSenseEngine": "disabled",
-        "clangd.detectExtensionConflicts": false
+        "clangd.detectExtensionConflicts": false,
+        "cortex-debug.variableUseNaturalFormat": false
     },
     "extensions": {
         "recommendations": [ "marus25.cortex-debug", "infineonag.modustoolbox-for-vscode", "dan-c-underwood.arm" ]

@@ -55,7 +55,8 @@ bool speaker_init(speaker_t *speaker, speaker_config_t *cfg) {
     }
 
     // DMA must write into this DAC channel's data register
-    if (cfg->dma_config->dst_addr != (uint32_t)&cfg->dac_number->DACDATA[cfg->dac_channel]) {
+    if (!XMC_DMA_IsEnabled(cfg->dma_number) ||
+        cfg->dma_number->CH[cfg->dma_channel].DAR != (uint32_t)&cfg->dac_number->DACDATA[cfg->dac_channel]) {
         return false;
     }
 

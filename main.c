@@ -41,8 +41,10 @@
 #include "cy_utils.h"
 #include "xmc_uart.h"
 
-#include "fsm.h"
-#include "SEGGER_RTT.h"
+#include "speaker.h"
+#include "audio.h"
+// #include "fsm.h"
+// #include "SEGGER_RTT.h"
 
 int main(void)
 {
@@ -55,20 +57,33 @@ int main(void)
         CY_ASSERT(0);
     }
 
-    SEGGER_RTT_Init();
-    SEGGER_RTT_WriteString(0,"starting program\n");
-
-    fsm_ctxt_t ctxt = {0};
-    ctxt.start_scan = 1;
-    volatile int valid_read;
-    volatile uint8_t data;
-    for (;;)
-    {
-        valid_read = read_rpi(&ctxt.from_rpi);
-        fsm_step(&ctxt);
-        write_rpi(&ctxt.to_rpi);
-
+    speaker_t speaker;
+    speaker_config_t speaker_config = {&SPEAKER_DMA_config, SPEAKER_DMA_HW, SPEAKER_DMA_NUM,
+                                       SPEAKER_DAC_HW, SPEAKER_DAC_NUM};
+    if(!speaker_init(&speaker, &speaker_config)) {
+        while(1) {}
     }
+
+    play_sound(&speaker, SOUND_NAME_FAH);
+    XMC_Delay(5000);
+    play_sound(&speaker, SOUND_NAME_SPONGEBOB_FAIL);
+
+    while(1) {}
+
+    // SEGGER_RTT_Init();
+    // SEGGER_RTT_WriteString(0,"starting program\n");
+
+    // fsm_ctxt_t ctxt = {0};
+    // ctxt.start_scan = 1;
+    // volatile int valid_read;
+    // volatile uint8_t data;
+    // for (;;)
+    // {
+    //     valid_read = read_rpi(&ctxt.from_rpi);
+    //     fsm_step(&ctxt);
+    //     write_rpi(&ctxt.to_rpi);
+
+    // }
 }
 
 /* [] END OF FILE */

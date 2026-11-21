@@ -1,6 +1,6 @@
 #include "fsm.h"
 #include "rpi_comms.h"
-#include "SEGGER_RTT.h"
+// #include "SEGGER_RTT.h"
 
 state_t state_idle_run(fsm_ctxt_t *ctxt) {
     if (ctxt->start_scan) {
