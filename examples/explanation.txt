@@ -1,0 +1,2 @@
+All files in the "examples" folder are merely for reference
+and are NOT included in the final build.
