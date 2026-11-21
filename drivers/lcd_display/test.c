@@ -118,7 +118,7 @@ void CCU40_0_IRQHandler(void)//interrupt for DAC timer
 }
 
 
-int main(void)
+int test(void)
 {
     cybsp_init();
     NHD_LCD_Init();

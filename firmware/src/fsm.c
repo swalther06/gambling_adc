@@ -9,6 +9,7 @@ state_t state_idle_run(fsm_ctxt_t *ctxt) {
         return STATE_FOLLOW;
     }
 
+    ctxt->start_step_pos = stepper_get_pos(&ctxt->turret);
     return STATE_IDLE;
 
 
@@ -16,26 +17,41 @@ state_t state_idle_run(fsm_ctxt_t *ctxt) {
 
 
 state_t state_follow_run(fsm_ctxt_t *ctxt) {
-    if (ctxt->from_rpi.left) {
-        // turn left
-    } else if (ctxt->from_rpi.right) {
-        // turn right
-    } else if (ctxt->from_rpi.center) {
-        // stay centered
+    if (ctxt->rpi_rd_valid) {
+        ctxt->left = ctxt->from_rpi.left;
+        ctxt->right = ctxt->from_rpi.right;
+        ctxt->center = ctxt->from_rpi.center;
+    }
+
+    int64_t step_pos = stepper_get_pos(&ctxt->turret);
+    int64_t steps_turned = step_pos - ctxt->start_step_pos;
+
+    if (steps_turned >= REVOLUTION_STEPS || steps_turned <= -REVOLUTION_STEPS) {// full rotation
+        ctxt->start_step_pos = step_pos;
+        ctxt->to_rpi.reset = true;
+        return STATE_DONE;
+    }
+
+    if (ctxt->left) {
+        stepper_rot_ccw(&ctxt->turret);
+    } else if (ctxt->right) {
+        stepper_rot_cw(&ctxt->turret);
+    } else if (!ctxt->center) {
+        if (ctxt->to_rpi.dir) // clockwise
+            stepper_rot_cw(&ctxt->turret);
+        else
+            stepper_rot_ccw(&ctxt->turret);
     }
 
     if (ctxt->from_rpi.player) {
-        ctxt->player_angles[ctxt->num_players++] = ctxt->pan_angle;
+        ctxt->player_angles[ctxt->num_players++] = step_pos;
+        ctxt->advance_start = step_pos;
         ctxt->to_rpi.reset = true;
         return STATE_ADVANCE;
     } else if (ctxt->from_rpi.skip) {
+        ctxt->advance_start = step_pos;
         ctxt->to_rpi.reset = true;
         return STATE_ADVANCE;
-    }
-
-    if (ctxt->pan_angle >= 360.0) {// full rotation
-        ctxt->to_rpi.reset = true;
-        return STATE_DONE;
     }
 
     return STATE_FOLLOW;
@@ -43,23 +59,26 @@ state_t state_follow_run(fsm_ctxt_t *ctxt) {
 
 
 state_t state_advance_run(fsm_ctxt_t *ctxt) {
-    if (!ctxt->to_rpi.dir) { // clockwise
-        if (ctxt->pan_angle > ctxt->player_angles[ctxt->num_players-1] + 10/*MARGIN*/) {
-            ctxt->to_rpi.reset = false;
-            return STATE_FOLLOW;
-        }
-        
-        // drive turret clockwise
-    } else { // counterclockwise
-        if (ctxt->pan_angle < ctxt->player_angles[ctxt->num_players-1] - 10 /*MARGIN*/) {
-            ctxt->to_rpi.reset = false;
-            return STATE_FOLLOW;
+    if (!ctxt->rpi_rd_valid)
+        return STATE_ADVANCE;
+
+    int64_t steps_turned = stepper_get_pos(&ctxt->turret) - ctxt->advance_start;
+
+    if (steps_turned < ADVANCE_STEP_MARGIN && steps_turned > -ADVANCE_STEP_MARGIN) {
+        if (ctxt->to_rpi.dir) { // clockwise
+            stepper_rot_cw(&ctxt->turret);
+        } else {
+            stepper_rot_ccw(&ctxt->turret);
         }
 
-        // drive turret counterclockwise
+        return STATE_ADVANCE;
     }
+    
+    if (ctxt->from_rpi.player || ctxt->from_rpi.skip)
+        return STATE_ADVANCE;
 
-    return STATE_ADVANCE;
+    ctxt->to_rpi.reset = false;
+    return STATE_FOLLOW;
 }
 
 
@@ -84,6 +103,18 @@ static state_t current = STATE_IDLE;
 
 void fsm_step(fsm_ctxt_t *ctxt) {
     current = state_table[current](ctxt);
+}
+
+
+void context_init(fsm_ctxt_t *ctxt) {
+    ctxt->turret = stepper_factory(DIR_PORT, 
+                                    DIR_PIN, 
+                                    STEP_PORT, 
+                                    STEP_PIN, 
+                                    SLEEP_PORT, 
+                                    SLEEP_PIN);
+    stepper_init(&ctxt->turret);
+    ctxt->start_scan = 1;
 }
 
 

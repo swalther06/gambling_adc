@@ -2,6 +2,11 @@
 #define FSM_H
 
 #include "rpi_comms.h"
+#include "stepper.h"
+#include "xmc_ccu4.h"
+#include "cycfg_pins.h"
+
+#define ADVANCE_STEP_MARGIN 10
 
 // states
 typedef enum {
@@ -18,10 +23,17 @@ typedef enum {
 // and pass by pointer
 typedef struct {
     rpi_inp_t from_rpi;
+    bool rpi_rd_valid;
     rpi_out_t to_rpi;
 
-    float pan_angle;
-    float player_angles[8]; // is this how we want to store players?
+    bool left;
+    bool right;
+    bool center;
+    stepper turret;
+
+    int64_t start_step_pos;
+    int64_t advance_start;
+    int64_t player_angles[16]; // is this how we want to store players? yes probs
     int num_players;
 
     bool start_scan;
@@ -38,6 +50,10 @@ state_t state_advance_run(fsm_ctxt_t *ctxt);
 state_t state_done_run(fsm_ctxt_t *ctxt);
 
 void fsm_step(fsm_ctxt_t *ctxt);
+
+void context_init(fsm_ctxt_t *ctxt);
+
+void set_stepper_timer(uint16_t rpm);
 
 
 #endif

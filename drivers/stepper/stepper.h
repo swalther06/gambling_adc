@@ -1,17 +1,21 @@
-#include <xmc_gpio.h>
-
-
 #ifndef STEPPER
 #define STEPPER
 
+#include "xmc_gpio.h"
+#include <stdint.h>
+#include <assert.h>
+
+
+#define REVOLUTION_STEPS 200
+
 //define ports/pins for dir, sleep, step pins 
 typedef struct{
-    XMC_GPIO_PORT_t *const DIRPORT; 
-    const uint8_t DIRPIN; 
-    XMC_GPIO_PORT_t *const STEPPORT; 
-    const uint8_t STEPPIN; 
-    XMC_GPIO_PORT_t *const SLEEPPORT; 
-    const uint8_t SLEEPPIN; 
+    XMC_GPIO_PORT_t *DIRPORT; 
+    uint8_t DIRPIN; 
+    XMC_GPIO_PORT_t *STEPPORT; 
+    uint8_t STEPPIN; 
+    XMC_GPIO_PORT_t *SLEEPPORT; 
+    uint8_t SLEEPPIN; 
 
     uint8_t direction; 
     int64_t position;
@@ -53,5 +57,14 @@ void stepper_reposition(int64_t wanted_pos, stepper *const uniqueStepper);
 //modifies: moves stepper one revolution in desired direction 
 //returns: nothing
 void stepper_revolution(uint64_t direction, stepper *const uniqueStepper); 
+
+
+void stepper_rot_ccw(stepper *const uniqueStepper);
+
+
+void stepper_rot_cw(stepper *const uniqueStepper);
+
+
+int64_t stepper_get_pos(stepper *const uniqueStepper);
 
 #endif

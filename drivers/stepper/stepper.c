@@ -1,7 +1,4 @@
 #include "stepper.h"
-#include "xmc4_gpio.h"
-#include "xmc_gpio.h"
-#include <stdint.h>
 
 
 //factory function to create stepper object and return by value
@@ -25,7 +22,7 @@ static const XMC_GPIO_CONFIG_t stpr_gpio_config_high = {XMC_GPIO_MODE_OUTPUT_PUS
 
 //direction pin set to medium strength, push/pull, output 0
 static void stepper_init_direction(stepper *const uniqueStepper){
-    XMC_GPIO_Init(uniqueStepper->DIRPORT, uniqueStepper->DIRPIN, &stpr_gpio_config_low);
+    XMC_GPIO_Init(uniqueStepper->DIRPORT, uniqueStepper->DIRPIN, &stpr_gpio_config_high);
     uniqueStepper->direction = 0; 
 }
 
@@ -82,7 +79,28 @@ void stepper_reposition(int64_t wanted_pos, stepper *const uniqueStepper){
 
 void stepper_revolution(uint64_t direction, stepper *const uniqueStepper){
     assert(direction == 0 || direction == 1); 
-    (direction == 0)? stepper_reposition(uniqueStepper->position - 200, uniqueStepper) :stepper_reposition(uniqueStepper->position + 200, uniqueStepper); 
+    (direction == 0) ? stepper_reposition(uniqueStepper->position - REVOLUTION_STEPS, uniqueStepper) :
+    stepper_reposition(uniqueStepper->position + REVOLUTION_STEPS, uniqueStepper); 
 }
+
+
+void stepper_rot_ccw(stepper *const uniqueStepper) {
+    if (uniqueStepper->direction == 1) // clockwise
+        stepper_set_dir_ccw(uniqueStepper);
+    stepper_increment(uniqueStepper);
+}
+
+
+void stepper_rot_cw(stepper *const uniqueStepper) {
+    if (uniqueStepper->direction == 0)  // ctrclockwise
+        stepper_set_dir_cw(uniqueStepper);
+    stepper_increment(uniqueStepper);
+}
+
+
+int64_t stepper_get_pos(stepper *const uniqueStepper) {
+    return uniqueStepper->position;
+}
+
 
 

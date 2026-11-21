@@ -55,12 +55,13 @@ int main(void)
         CY_ASSERT(0);
     }
 
-    fsm_ctxt_t ctxt = {0};
-    ctxt.start_scan = 1;
-    volatile int valid_read;
+    SEGGER_RTT_Init();
+    fsm_ctxt_t ctxt;
+    context_init(&ctxt);
+
     for (;;)
     {
-        valid_read = read_rpi(&ctxt.from_rpi);
+        ctxt.rpi_rd_valid = read_rpi(&ctxt.from_rpi);
         fsm_step(&ctxt);
         write_rpi(&ctxt.to_rpi);
 

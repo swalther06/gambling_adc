@@ -181,3 +181,15 @@
 964	1215	8164113159710439	C:/Users/Soren/Classes/eecs373/gambling_adc/build/Debug/libraries_shared/mtb-xmclib-cat3/XMCLib/src/xmc_wdt.o	c1203f8ef1bc5ea1
 900	1287	8164113159073137	C:/Users/Soren/Classes/eecs373/gambling_adc/build/Debug/libraries_shared/mtb-xmclib-cat3/XMCLib/src/xmc_usbd.o	345e7f88a19220b5
 949	1343	8164113159566370	C:/Users/Soren/Classes/eecs373/gambling_adc/build/Debug/libraries_shared/mtb-xmclib-cat3/XMCLib/src/xmc_vadc.o	edf94a4c3ff647af
+1132	3159	8165624781262448	C:/Users/Soren/Classes/eecs373/gambling_adc/build/Debug/local/drivers/lcd_display/test.o	5c168fbc42d35eb0
+738	3168	8165624775476740	C:/Users/Soren/Classes/eecs373/gambling_adc/build/Debug/local/drivers/lcd_display/nhd_lib.o	5a321f1bcdd11bbb
+1360	3169	8165624781717528	C:/Users/Soren/Classes/eecs373/gambling_adc/build/Debug/local/firmware/src/fsm.o	9135f3d06e5b2fca
+1369	3169	8165624781847433	C:/Users/Soren/Classes/eecs373/gambling_adc/build/Debug/local/main.o	75e496db435eeddf
+1322	3169	8165624781560411	C:/Users/Soren/Classes/eecs373/gambling_adc/build/Debug/local/drivers/stepper/stepper.o	d4351425597b00c7
+65	216	8165625420912717	C:/Users/Soren/Classes/eecs373/gambling_adc/build/Debug/local/drivers/lcd_display/test.o	5c168fbc42d35eb0
+216	379	8165625422295517	build/APP_KIT_XMC47_RELAX_V1/Debug/mtb-example-xmc-empty-app.elf	b1fba5294c16dde8
+13	204	8165635304724250	C:/Users/Soren/Classes/eecs373/gambling_adc/build/Debug/local/firmware/src/fsm.o	9135f3d06e5b2fca
+205	350	8165635306601626	build/APP_KIT_XMC47_RELAX_V1/Debug/mtb-example-xmc-empty-app.elf	b1fba5294c16dde8
+19	154	8165635973907399	C:/Users/Soren/Classes/eecs373/gambling_adc/build/Debug/local/firmware/src/fsm.o	9135f3d06e5b2fca
+155	272	8165635975302810	build/APP_KIT_XMC47_RELAX_V1/Debug/mtb-example-xmc-empty-app.elf	b1fba5294c16dde8
+962	1406	8166823212497437	C:/Users/Soren/Classes/eecs373/gambling_adc/build/Debug/local/main.o	75e496db435eeddf

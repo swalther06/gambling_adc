@@ -31,7 +31,7 @@ state = State.IDLE
 def next_target(faces, direction):
     # clockwise, so faces should be right of center
     aheads = []
-    if direction == 0: 
+    if direction == 1: 
         aheads = [i.keypoints[2].x - 0.5 if i.keypoints[2].x > 0.5 else 1 for i in faces]
         
     # otherwise counterclockwise, so faces should be left of center
@@ -186,10 +186,10 @@ with FaceDetector.create_from_options(fd_options) as fd, GestureRecognizer.creat
                         
                     # tell MCU what direction to turn to center output
                     if person_center < 0.5 - CENTER_MARGIN:
-                        right = 1
+                        left = 1
                         
                     elif person_center > 0.5 + CENTER_MARGIN:
-                        left = 1
+                        right = 1
                         
                     else:
                         # start timer for authentication
